@@ -1,73 +1,51 @@
-# workmatch-backend
 # Skill-to-Opportunities: Backend
 
-## Project Summary
+## Project summary
+Django REST API for a platform where students turn project work into a skills portfolio and find internships and entry-level openings. Candidates link skills to projects as evidence, employers post openings, and the API will compute an explainable match score. This repository is the backend; the React frontend is in `skill-to-opportunities_frontend`.
 
-Skill-to-Opportunities is a platform that connects students and early-career candidates with relevant internships, jobs, and entry-level opportunities based on their demonstrated skills and project experience.
+Done so far: project setup, PostgreSQL connection, custom user model with roles (candidate, employer, admin), register, login, token refresh, current user, role permission classes, Swagger docs and tests.
 
-Candidates can showcase their skills through real project evidence, such as GitHub repositories, live demos, and Figma designs. Employers can publish opportunities with required and preferred skills, while the platform provides explainable skill-match scores, highlights missing skills, and helps candidates discover relevant career opportunities.
+## Tech stack
+Django 5.1, Django REST Framework, SimpleJWT (token login), PostgreSQL, drf-spectacular (Swagger / OpenAPI), pytest and pytest-django.
 
-## Tech Stack
+## Setup steps
+1. Install Python 3.12 and PostgreSQL.
+2. Create the database: `createdb skill_to_opportunities` (or create it in pgAdmin).
+3. Create and activate a virtual environment:
+   - Windows: `python -m venv venv` then `venv\Scripts\activate`
+   - macOS/Linux: `python3 -m venv venv` then `source venv/bin/activate`
+4. Install dependencies: `pip install -r requirements.txt`
+5. Copy `.env.example` to `.env` and fill in your values.
+6. Apply migrations: `python manage.py migrate`
+7. Create an admin: `python manage.py createsuperuser`
 
-- **Backend Framework:** Django
-- **Database:** PostgreSQL
-- **Testing:** pytest
-- **API Documentation:** Swagger (OpenAPI)
-- **API Development:** Django REST Framework (planned, if adopted)
-
-## Project Setup
-
-Setup instructions will be added once the initial project structure and dependencies are established.
-
-## Environment Variables
-
-The application will use environment variables to manage configuration and sensitive information.
-
-Expected variables include:
-
-| Variable | Description |
+## Environment variables
+| Variable | Meaning |
 |---|---|
-| `SECRET_KEY` | Django secret key |
-| `DEBUG` | Enables or disables debug mode |
-| `ALLOWED_HOSTS` | Allowed application hosts |
-| `DB_NAME` | PostgreSQL database name |
-| `DB_USER` | PostgreSQL username |
-| `DB_PASSWORD` | PostgreSQL password |
-| `DB_HOST` | Database host |
-| `DB_PORT` | Database port |
+| DJANGO_SECRET_KEY | Secret key. Use a long random string |
+| DJANGO_DEBUG | `True` for development |
+| DJANGO_ALLOWED_HOSTS | Comma-separated hosts |
+| DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT | PostgreSQL connection |
+| CORS_ALLOWED_ORIGINS | Frontend URL, for example `http://localhost:5173` |
+| USE_SQLITE | `1` runs on SQLite for quick tests without PostgreSQL |
 
-A `.env.example` file will be provided as the project configuration evolves.
+## How to run
+`python manage.py runserver` then open:
+- Swagger documentation: http://localhost:8000/api/docs/
+- Django admin: http://localhost:8000/admin/
 
-## How to Run
+## How to test
+`pytest`
 
-Installation, database configuration, migrations, and development server instructions will be documented once the initial backend setup is complete.
+To run tests without PostgreSQL: set `USE_SQLITE=1` (Windows PowerShell: `$env:USE_SQLITE=1`).
 
-## How to Test
+## API (so far)
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | /api/auth/register/ | Register as candidate or employer |
+| POST | /api/auth/login/ | Log in with email and password |
+| POST | /api/auth/refresh/ | New access token |
+| GET | /api/auth/me/ | Logged-in user details |
 
-The project uses pytest for automated testing.
-
-Test instructions and relevant test configurations will be added during backend development.
-
-## Core Features
-
-- **Candidate Profiles:** Create and manage profiles with skills and project portfolios.
-- **Project Evidence:** Link skills to supporting projects, including GitHub repositories, live demos, and Figma files.
-- **Employer Management:** Allow verified employers to create and manage opportunities.
-- **Opportunity Management:** Publish jobs, internships, and entry-level openings with required and preferred skills.
-- **Skill Matching:** Calculate transparent match scores between candidate skills and opportunity requirements.
-- **Skill Gap Identification:** Highlight matched and missing skills for each opportunity.
-- **Applications:** Submit applications with selected projects and preserve the submitted application snapshot.
-- **Access Control:** Enforce role-based permissions and protect candidate and employer data.
-
-## Development Principles
-
-- Maintain clean and modular backend architecture.
-- Use a standardized skill taxonomy to avoid duplicate skill entries.
-- Keep matching calculations explainable and testable.
-- Enforce secure authentication and role-based authorization.
-- Validate application deadlines and prevent duplicate submissions.
-- Maintain automated tests for critical business logic.
-
-## Project Status
-
-🚧 Backend development in progress.
+## Git workflow
+Never commit to `main`. Work on branches such as `neha/feat/auth`, open a pull request with a clear description, add a label, and write `Closes #<issue>` in the description.
